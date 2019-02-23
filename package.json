@@ -1,0 +1,22 @@
+{
+  "name": "connectin-server-mock",
+  "version": "1.0.0",
+  "description": "Mocking a server Rest API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/migvillabato/connectin-server-mock.git"
+  },
+  "author": "Miguel VL",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/migvillabato/connectin-server-mock/issues"
+  },
+  "homepage": "https://github.com/migvillabato/connectin-server-mock#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
