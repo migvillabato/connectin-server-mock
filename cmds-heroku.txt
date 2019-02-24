@@ -1,0 +1,1 @@
+git push heroku master / sets the remote app
