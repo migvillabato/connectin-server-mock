@@ -51,7 +51,7 @@ function parseRequest(req, res)
   if('customParameters' in req && 'isAsync' in req.customParameters)
     isAsync = req.customParameters['isAsync'];
 
-  if(isAsync == true)
+  if(isAsync == 'true')
   {
     redirect[KEY_URL] = 'https://docs.oppwa.com';
     redirect[KEY_METHOD] = 'GET';
