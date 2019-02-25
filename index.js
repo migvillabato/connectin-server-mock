@@ -31,7 +31,6 @@ const VAL_VAPENDING_DESCRIPTION = 'Waiting for confirmation of non-instant payme
 
 
 // others
-const VA_PENDING = 'va_pending';
 
 function parseRequest(req, res)
 {
@@ -47,11 +46,11 @@ function parseRequest(req, res)
   //For async workflows includes the redirectURL.
   var redirect = {};
 
-  var isAsync = false;
-  if('customParameters' in req && 'isAsync' in req.customParameters)
-    isAsync = req.customParameters['isAsync'];
+  var expectedWorkflow = false;
+  if('customParameters' in req && 'expectedWorkflow' in req.customParameters)
+    expectedWorkflow = req.customParameters['expectedWorkflow'];
 
-  if(isAsync == 'true')
+  if(expectedWorkflow == 'async')
   {
     redirect[KEY_URL] = 'https://docs.oppwa.com';
     redirect[KEY_METHOD] = 'GET';
@@ -73,19 +72,20 @@ function setStatus(req, response)
   
   var expectedResult = 'undefined';
 
+  var resultFormatRegex = /[0-9]{3}\.[0-9]{3}\.[0-9]{3}/;
+
+
+
   //Setting result field.
-  if('customParameters' in req)
+  if( ('customParameters' in req) && req.customParameters['expectedResult'].match(resultFormatRegex) ) {
     expectedResult = req.customParameters['expectedResult'];
-
-
-  if (expectedResult == "VA_PENDING") {
-    result[KEY_RESULT_CODE] = VAL_VAPENDING_CODE;
-    result[KEY_RESULT_DESCRIPTION] = VAL_VAPENDING_DESCRIPTION;
-
+    result[KEY_RESULT_CODE] = expectedResult;
   } else {
     result[KEY_RESULT_CODE] = VAL_SUCESS_CODE;
-    result[KEY_RESULT_DESCRIPTION] = VAL_SUCCESS_DESCRIPTION;  
   }
+
+  result[KEY_RESULT_DESCRIPTION] = "";
+
   response["result"] = result;
 
 
