@@ -30,6 +30,7 @@ const VAL_SUCCESS_DESCRIPTION = 'Transaction successfully processed.';
 const VAL_VAPENDING_DESCRIPTION = 'Waiting for confirmation of non-instant payment. Denied for now.';
 
 
+
 // others
 
 function parseRequest(req, res)
