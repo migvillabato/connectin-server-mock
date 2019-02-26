@@ -32,10 +32,6 @@ const KEY_RESULT_DETAILS_DESCRIPTION = 'description';
 
 // result values.
 const VAL_SUCESS_CODE = '000.000.000';
-const VAL_VAPENDING_CODE = '800.400.500';
-const VAL_SUCCESS_DESCRIPTION = 'Transaction successfully processed.';
-const VAL_VAPENDING_DESCRIPTION = 'Waiting for confirmation of non-instant payment. Denied for now.';
-
 
 
 // others
@@ -57,7 +53,10 @@ function parseRequest(req, res)
   response[KEY_CURRENCY] = req[KEY_CURRENCY];
   
   var card = {};
-  var cardNumberLenght = req[KEY_CARD_NUMBER].length;
+  var cardNumberLenght = 0;
+  if(req.hasOwnProperty(KEY_CARD_NUMBER))
+  cardNumberLenght = req[KEY_CARD_NUMBER].length;
+
   if(cardNumberLenght > 5)
   {
     card[KEY_CARD_BIN] = req[KEY_CARD_NUMBER].substring(0, 6);
