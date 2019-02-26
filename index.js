@@ -10,8 +10,8 @@ app.listen(port, () => {
 const KEY_PAYMENT_BRAND = 'paymentBrand';
 const KEY_AMOUNT = 'amount';
 const KEY_CURRENCY = 'currency';
-const KEY_UID = 'uid';
-const KEY_DESCRIPTOR = 'descriptor';
+const KEY_DESCRIPTOR = 'ShortId';
+const KEY_UID = 'UUID';
 const KEY_PAYMENT_TYPE = 'paymentType';
 const KEY_URL = 'url';
 const KEY_METHOD = 'method';
@@ -44,9 +44,14 @@ function parseRequest(req, res)
 {
   var response = {};
 
+  if('customParameters' in req)
+  response['id'] = req.customParameters[KEY_UID];
+
   response[KEY_PAYMENT_BRAND] = req[KEY_PAYMENT_BRAND];
-  response[KEY_UID] = req[KEY_UID];
-  response[KEY_DESCRIPTOR] = req[KEY_DESCRIPTOR];
+
+  if('customParameters' in req)
+    response['descriptor'] = req.customParameters[KEY_DESCRIPTOR];
+    
   response[KEY_PAYMENT_TYPE] = req[KEY_PAYMENT_TYPE];
   response[KEY_AMOUNT] = req[KEY_AMOUNT];
   response[KEY_CURRENCY] = req[KEY_CURRENCY];
@@ -102,7 +107,9 @@ function setStatus(req, response)
 
 
   //Setting result field.
-  if( ('customParameters' in req) && req.customParameters['expectedResult'].match(resultFormatRegex) ) {
+  req.customParameters;
+  if( ('customParameters' in req) && req.hasOwnProperty['expectedResult'] 
+    && req.customParameters['expectedResult'].match(resultFormatRegex) ) {
     expectedResult = req.customParameters['expectedResult'];
     result[KEY_RESULT_CODE] = expectedResult;
   } else {
@@ -135,6 +142,8 @@ app.post("/v1/payments", (req, res, next) => {
   var body = req.body;
 
   var response = parseRequest(body, res);
+
+  console.log(response);
 
   res.type('application/json');
   res.send(response);
