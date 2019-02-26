@@ -23,7 +23,7 @@ const KEY_CARD_LAST4DIGITS = 'card.last4Digits';
 const KEY_CARD_HOLDER = 'card.holder';
 const KEY_CARD_EXPIRYMONTH = 'card.expiryMonth';
 const KEY_CARD_EXPIRYYEAR = 'card.expiryYear';
-
+const KEY_NOTIFICATION_URL='notificationUrl';
 // result keys
 const KEY_RESULT_CODE = 'code';
 const KEY_RESULT_DESCRIPTION = 'description';
@@ -136,8 +136,6 @@ function setStatus(req, response)
 
   var resultFormatRegex = /[0-9]{3}\.[0-9]{3}\.[0-9]{3}/;
 
-
-
   //Setting result field.
   req.customParameters;
   if( ('customParameters' in req) && req.customParameters.hasOwnProperty('expectedResult') 
@@ -158,6 +156,7 @@ function setStatus(req, response)
 
   resultDetails[KEY_RESULT_DETAILS_ACQUIRERRESPONSE] = '00';
   resultDetails[KEY_RESULT_DETAILS_DESCRIPTION] = 'someDescription';
+  resultDetails[KEY_NOTIFICATION_URL]=req[KEY_NOTIFICATION_URL];
 
   response["resultDetails"] = resultDetails;
 
@@ -172,11 +171,7 @@ app.use(bodyParser.json()); // for parsing application/json
 
 app.post("/v1/payments", (req, res, next) => {
   var body = req.body;
-
   var response = parseRequest(body, res);
-
-  console.log(response);
-
   res.type('application/json');
   res.send(response);
 });
