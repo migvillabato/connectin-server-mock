@@ -24,6 +24,8 @@ const KEY_CARD_HOLDER = 'card.holder';
 const KEY_CARD_EXPIRYMONTH = 'card.expiryMonth';
 const KEY_CARD_EXPIRYYEAR = 'card.expiryYear';
 const KEY_NOTIFICATION_URL='notificationUrl';
+const KEY_SHOPPERRESULT_URL='shopperResultUrl';
+
 // result keys
 const KEY_RESULT_CODE = 'code';
 const KEY_RESULT_DESCRIPTION = 'description';
@@ -157,6 +159,8 @@ function setStatus(req, response)
   resultDetails[KEY_RESULT_DETAILS_ACQUIRERRESPONSE] = '00';
   resultDetails[KEY_RESULT_DETAILS_DESCRIPTION] = 'someDescription';
   resultDetails[KEY_NOTIFICATION_URL]=req[KEY_NOTIFICATION_URL];
+  resultDetails[KEY_SHOPPERRESULT_URL]=req[KEY_SHOPPERRESULT_URL];
+  
 
   response["resultDetails"] = resultDetails;
 
@@ -175,3 +179,73 @@ app.post("/v1/payments", (req, res, next) => {
   res.type('application/json');
   res.send(response);
 });
+
+
+
+
+
+
+function decodeHTHML(str)
+{
+  result = str.replace(/%2F/g, '/');
+  result = result.replace(/%2B/g, '+');
+  return result;
+}
+
+function calculateSignature(req)
+{
+  var response = {};
+
+  var data='';
+
+  var secret = req['secret'];
+  delete req.secret;
+
+  requestKeys = Object.keys(req);
+  reqLength = requestKeys.length;
+  var sortedRequestKeys = requestKeys.sort();
+
+  sortedRequestKeys.forEach( function(prop) {
+    data+= prop + '=' + decodeHTHML(req[prop]);
+    --reqLength;
+    if(reqLength>0)
+      data+='|';
+  });
+
+  const crypto = require('crypto');
+  const hmac = crypto.createHmac('sha256', secret);
+
+  console.log(data);
+  hmac.update(data);
+  signature = hmac.digest('hex');
+  console.log(signature);
+
+  response['signature'] = signature;
+  return response;
+}
+
+
+
+
+/*const url = require('url');  
+const querystring = require('querystring');*/
+
+app.get("/getSignature", (req, res, next) => {
+
+  var query = req.query;
+
+  var response = calculateSignature(query);
+  res.type('application/json');
+  res.send(response);
+});
+
+
+
+
+
+
+
+
+
+
+
