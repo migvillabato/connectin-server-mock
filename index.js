@@ -16,6 +16,13 @@ const KEY_PAYMENT_TYPE = 'paymentType';
 const KEY_URL = 'url';
 const KEY_METHOD = 'method';
 const KEY_REDIRECT = 'redirect';
+const KEY_CARD = 'card';
+const KEY_CARD_NUMBER = 'card.number';
+const KEY_CARD_BIN = 'card.bin';
+const KEY_CARD_LAST4DIGITS = 'card.last4Digits';
+const KEY_CARD_HOLDER = 'card.holder';
+const KEY_CARD_EXPIRYMONTH = 'card.expiryMonth';
+const KEY_CARD_EXPIRYYEAR = 'card.expiryYear';
 
 // result keys
 const KEY_RESULT_CODE = 'code';
@@ -43,6 +50,23 @@ function parseRequest(req, res)
   response[KEY_PAYMENT_TYPE] = req[KEY_PAYMENT_TYPE];
   response[KEY_AMOUNT] = req[KEY_AMOUNT];
   response[KEY_CURRENCY] = req[KEY_CURRENCY];
+  
+  var card = {};
+  var cardNumberLenght = req[KEY_CARD_NUMBER].length;
+  if(cardNumberLenght > 5)
+  {
+    card[KEY_CARD_BIN] = req[KEY_CARD_NUMBER].substring(0, 6);
+  }
+  if(cardNumberLenght > 3)
+  {
+    card[KEY_CARD_LAST4DIGITS] = req[KEY_CARD_NUMBER].substring(cardNumberLenght-4, cardNumberLenght);
+  }
+
+  card[KEY_CARD_HOLDER] = req[KEY_CARD_HOLDER];
+  card[KEY_CARD_EXPIRYMONTH] = req[KEY_CARD_EXPIRYMONTH];
+  card[KEY_CARD_EXPIRYYEAR] = req[KEY_CARD_EXPIRYYEAR];
+
+  response[KEY_CARD] = card;
 
   //For async workflows includes the redirectURL.
   var redirect = {};
