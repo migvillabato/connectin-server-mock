@@ -34,6 +34,39 @@ const KEY_RESULT_DETAILS_DESCRIPTION = 'description';
 const VAL_SUCESS_CODE = '000.000.000';
 
 
+var card = {};
+
+function isUndefined(obj)
+{
+  return (obj === undefined)
+}
+
+function setCardHolder( cardHolder )
+{
+  if (!isUndefined(cardHolder))
+    card[KEY_CARD_HOLDER] = cardHolder;
+}
+
+function setExpiryMonth( expiryMonth )
+{
+  if (!isUndefined(expiryMonth))
+    card[KEY_CARD_EXPIRYMONTH] = expiryMonth;
+}
+
+function setExpiryYear( expiryYear )
+{
+  if (!isUndefined(expiryYear))
+    card[KEY_CARD_EXPIRYYEAR] = expiryYear;
+}
+
+function isEmpty(ob){
+  for(var i in ob)
+  {
+    console.log("Server running on port " + i);
+    return false;}
+ return true;
+}
+
 // others
 
 function parseRequest(req, res)
@@ -52,7 +85,6 @@ function parseRequest(req, res)
   response[KEY_AMOUNT] = req[KEY_AMOUNT];
   response[KEY_CURRENCY] = req[KEY_CURRENCY];
   
-  var card = {};
   var cardNumberLenght = 0;
   if(req.hasOwnProperty(KEY_CARD_NUMBER))
   cardNumberLenght = req[KEY_CARD_NUMBER].length;
@@ -66,11 +98,12 @@ function parseRequest(req, res)
     card[KEY_CARD_LAST4DIGITS] = req[KEY_CARD_NUMBER].substring(cardNumberLenght-4, cardNumberLenght);
   }
 
-  card[KEY_CARD_HOLDER] = req[KEY_CARD_HOLDER];
-  card[KEY_CARD_EXPIRYMONTH] = req[KEY_CARD_EXPIRYMONTH];
-  card[KEY_CARD_EXPIRYYEAR] = req[KEY_CARD_EXPIRYYEAR];
-
-  response[KEY_CARD] = card;
+  setCardHolder(req[KEY_CARD_HOLDER]);
+  setExpiryMonth(req[KEY_CARD_EXPIRYMONTH]); 
+  setExpiryYear(req[KEY_CARD_EXPIRYYEAR]);
+  
+  if (!isEmpty(card))
+    response[KEY_CARD] = card;
 
   //For async workflows includes the redirectURL.
   var redirect = {};
@@ -107,7 +140,7 @@ function setStatus(req, response)
 
   //Setting result field.
   req.customParameters;
-  if( ('customParameters' in req) && req.hasOwnProperty['expectedResult'] 
+  if( ('customParameters' in req) && req.customParameters.hasOwnProperty('expectedResult') 
     && req.customParameters['expectedResult'].match(resultFormatRegex) ) {
     expectedResult = req.customParameters['expectedResult'];
     result[KEY_RESULT_CODE] = expectedResult;
