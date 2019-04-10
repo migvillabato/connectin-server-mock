@@ -25,6 +25,8 @@ const KEY_CARD_EXPIRYMONTH = 'card.expiryMonth';
 const KEY_CARD_EXPIRYYEAR = 'card.expiryYear';
 const KEY_NOTIFICATION_URL='notificationUrl';
 const KEY_SHOPPERRESULT_URL='shopperResultUrl';
+const KEY_EXTENDED_DESCRIPTION='ExtendedDescription';
+
 
 // result keys
 const KEY_RESULT_CODE = 'code';
@@ -148,7 +150,7 @@ function setStatus(req, response)
     result[KEY_RESULT_CODE] = VAL_SUCESS_CODE;
   }
 
-  result[KEY_RESULT_DESCRIPTION] = "";
+  result[KEY_RESULT_DESCRIPTION] = "some_result_description";
 
   response["result"] = result;
 
@@ -156,11 +158,12 @@ function setStatus(req, response)
   //Sets resultDetails
   var resultDetails = {};
 
-  resultDetails[KEY_RESULT_DETAILS_ACQUIRERRESPONSE] = '00';
+  resultDetails[KEY_RESULT_DETAILS_ACQUIRERRESPONSE] = '33';
   resultDetails[KEY_RESULT_DETAILS_DESCRIPTION] = 'someDescription';
   resultDetails[KEY_NOTIFICATION_URL]=req[KEY_NOTIFICATION_URL];
   resultDetails[KEY_SHOPPERRESULT_URL]=req[KEY_SHOPPERRESULT_URL];
-  
+  resultDetails[KEY_EXTENDED_DESCRIPTION]="someExtendedDescription";
+
 
   response["resultDetails"] = resultDetails;
 
