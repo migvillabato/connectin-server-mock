@@ -73,9 +73,12 @@ function isEmpty(ob){
 
 // others
 
-function parseRequest(req, res)
+function parseRequest(req, res, reqParams)
 {
   var response = {};
+
+  if(!isUndefined(reqParams) && 'paymentId' in reqParams)
+  req.customParameters[KEY_UID] = reqParams.paymentId;
 
   if('customParameters' in req)
   response['id'] = req.customParameters[KEY_UID];
@@ -183,7 +186,12 @@ app.post("/v1/payments", (req, res, next) => {
   res.send(response);
 });
 
-
+app.post("/v1/payments/:paymentId", (req, res, next) => {
+  var body = req.body;
+  var response = parseRequest(body, res, req.params);
+  res.type('application/json');
+  res.send(response);
+});
 
 
 
