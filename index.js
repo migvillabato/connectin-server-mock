@@ -26,7 +26,7 @@ const KEY_CARD_EXPIRYYEAR = 'card.expiryYear';
 const KEY_NOTIFICATION_URL='notificationUrl';
 const KEY_SHOPPERRESULT_URL='shopperResultUrl';
 const KEY_EXTENDED_DESCRIPTION='ExtendedDescription';
-
+const KEY_CONN_TX_ID1='ConnectorTxId1';
 
 // result keys
 const KEY_RESULT_CODE = 'code';
@@ -80,6 +80,7 @@ function parseRequest(req, res, reqParams)
   if(!isUndefined(reqParams) && 'paymentId' in reqParams)
   req.customParameters[KEY_UID] = reqParams.paymentId;
 
+  // precondition: The UUID is always sent in a customParameter.
   if('customParameters' in req)
   response['id'] = req.customParameters[KEY_UID];
 
@@ -130,7 +131,6 @@ function parseRequest(req, res, reqParams)
 
   setStatus(req, response);
 
-  response = JSON.stringify(response);
 
   return response;
 };
@@ -166,7 +166,7 @@ function setStatus(req, response)
   resultDetails[KEY_NOTIFICATION_URL]=req[KEY_NOTIFICATION_URL];
   resultDetails[KEY_SHOPPERRESULT_URL]=req[KEY_SHOPPERRESULT_URL];
   resultDetails[KEY_EXTENDED_DESCRIPTION]="someExtendedDescription";
-
+  resultDetails[KEY_CONN_TX_ID1]=response['id'];
 
   response["resultDetails"] = resultDetails;
 
@@ -180,9 +180,12 @@ app.use(bodyParser.json()); // for parsing application/json
 
 
 app.post("/v1/payments", (req, res, next) => {
+  var encoding = req.headers['content-type'];
   var body = req.body;
   var response = parseRequest(body, res);
   res.type('application/json');
+  response['encoding']=encoding;
+  response = JSON.stringify(response);
   res.send(response);
 });
 
